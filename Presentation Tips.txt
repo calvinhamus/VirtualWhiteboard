@@ -1,0 +1,42 @@
+- intro and overview (Milson: slides 1-6)
+- front end (Justin: slides 7-10)
+- node.js (Calvin: slides 11 -15)
+- API and dev setup (Patrick: slides 16 -21 + "nickel tour")
+- full demo (all of us plus the class)
+
+minimal features due to time constraint
+Puppet modules and a Vagrantfile so we can recreate the same servers locally
+ set up Node or Redis using Vagrant 
+Jersey for JAX-RS, Jackson for JSON marshalling/unmarshalling, and really basic Hiberate for DB interaction. 
+Node will be doing the load balancing 
+Node hooks to mysql very well.
+redis, to handle the balancing between the websockets.  
+load balance the Java API using Nginx
+Nginx installed and configured and api WAR deployed to nodes one and two
+
+MySQL tables  chats and whiteboards and create related API endpoints
+- get the list of users ("/users/getusers")
+- get the list of rooms ("/room/getrooms")
+- get a single room ("/room/{roomname}")
+- create a user ("/users/create/{username}")
+- create a room ("/room/create/{roomname}/userid/{userid}")  
+- login endpoint ("/users/login/{username}/password/{password}")
+- joining a room ("/room/join/{roomname}/user/{username}")
+- leaving a room ("/room/leave/{roomname}/user/{username}")
+ retrieving the entire chat/whiteboard history with the read endpoint,
+Here's a potential plan for the CRUD endpoints for a single room based on my understanding right now...
+
+- create: just creates a new room, no chat messages or whiteboard edits yet
+- read: responds with the entire state of the room: metadata (id, creator, name, etc.), full chat transcript, and all whiteboard edits sequentially in JSON
+- update: receives new metadata like the name of the room; responds only with updated metadata (no chat or whiteboard data)
+- updateChat: receives a single chat message in JSON; responds with the updated chat transcript in JSON after assimilating the new message (in case caller is missing messages)
+- updateBoard: receives a single whiteboard edit in JSON; responds with the updated list of all whiteboard edits sequentially (again in case caller is missing edits)
+- delete: deletes the record of the room which includes its chat transcript and whiteboard edits
+
+plugin called Enunciate to generate REST API documentation (mvn enunciate:docs)
+It'd also be nice to find a good tool that will generate API client code for Node on the fly.
+we were planning to handle the actual real-time chats using Web Sockets from Node, but would we want Node to save a chat history in the database via the API
+
+https://www.youtube.com/watch?v=ByZenKhLVRg
+http://www.emergingedtech.com/2010/04/6-free-online-interactive-white-boards/
+http://www.scriblink.com/
